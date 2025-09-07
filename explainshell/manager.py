@@ -113,7 +113,7 @@ class manager(object):
                 m = self.process(ctx)
                 if m:
                     added.append(m)
-            except errors.EmptyManpage, e:
+            except errors.EmptyManpage as e:
                 logger.error('manpage %r is empty!', e.args[0])
             except ValueError:
                 logger.fatal('uncaught exception when handling manpage %s', path)
@@ -182,9 +182,9 @@ def main(files, dbname, dbhost, overwrite, drop, verify):
     m = manager(dbhost, dbname, gzs, overwrite, drop)
     added, exists = m.run()
     for mp in added:
-        print 'successfully added %s' % mp.source
+        print('successfully added %s' % mp.source)
     if exists:
-        print 'these manpages already existed and werent overwritten: \n\n%s' % '\n'.join([m.path for m in exists])
+        print('these manpages already existed and werent overwritten: \n\n%s' % '\n'.join([m.path for m in exists]))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='process man pages and save them in the store')

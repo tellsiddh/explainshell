@@ -88,7 +88,7 @@ class matcher(bashlex.ast.nodevisitor):
         return self._currentoption
 
     def findmanpages(self, prog):
-        prog = prog.decode('latin1')
+        # prog = prog.decode('latin1')
         logger.info('looking up %r in store', prog)
         manpages = self.store.findmanpage(prog)
         logger.info('found %r in store, got: %r, using %r', prog, manpages, manpages[0])
@@ -261,7 +261,7 @@ class matcher(bashlex.ast.nodevisitor):
             # we consume this node here, pop it from parts so we
             # don't visit it again as an argument
             parts.pop(idxwordnode)
-        except errors.ProgramDoesNotExist, e:
+        except errors.ProgramDoesNotExist as e:
             if addgroup:
                 # add a group for this command, we'll mark it as unknown
                 # when visitword is called
@@ -593,7 +593,7 @@ class matcher(bashlex.ast.nodevisitor):
         for i in range(len(parsed)):
             c = self.s[i]
             # whitespace is always 'unparsed'
-            if c.isspace():
+            if isinstance(c, str) and c.isspace():
                 parsed[i] = True
 
             # the parser ignores comments but we can use a trick to see if this
@@ -627,6 +627,7 @@ class matcher(bashlex.ast.nodevisitor):
         sametext = itertools.groupby(matches, lambda m: m.text)
         for text, ll in sametext:
             for l in util.groupcontinuous(ll, key=lambda m: resultindex[m]):
+                l = list(l)
                 if len(l) == 1:
                     merged.append(l[0])
                 else:

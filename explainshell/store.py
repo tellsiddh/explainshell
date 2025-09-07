@@ -215,10 +215,10 @@ class store(object):
     2) manpage - contains a processed man page
     3) mapping - contains (name, manpageid, score) tuples
     '''
-    def __init__(self, db='explainshell', host=config.MONGO_URI):
-        logger.info('creating store, db = %r, host = %r', db, host)
-        self.connection = pymongo.MongoClient(host)
-        self.db = self.connection[db]
+    def __init__(self, config):
+        logger.info('creating store, db = %r, host = %r', config.DBNAME, config.MONGO_URI)
+        self.connection = pymongo.MongoClient(config.MONGO_URI)
+        self.db = self.connection[config.DBNAME]
         self.classifier = self.db['classifier']
         self.manpage = self.db['manpage']
         self.mapping = self.db['mapping']
@@ -289,7 +289,7 @@ class store(object):
         logger.info('got %s', results)
         if section is not None:
             if len(results) > 1:
-                results.sort(key=lambda (oid, m): m.section == section, reverse=True)
+                results.sort(key=lambda item: item[1].section == section, reverse=True)
                 logger.info(r'sorting %r so %s is first', results, section)
             if not results[0][1].section == section:
                 raise errors.ProgramDoesNotExist(origname)

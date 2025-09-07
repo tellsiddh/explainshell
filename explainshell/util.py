@@ -43,7 +43,7 @@ def groupcontinuous(l, key=None):
     '''
     if key is None:
         key = lambda x: x
-    for k, g in itertools.groupby(enumerate(l), lambda (i, x): i-key(x)):
+    for k, g in itertools.groupby(enumerate(l), lambda item: item[0] - key(item[1])):
         yield map(itemgetter(1), g)
 
 def toposorted(graph, parents):
@@ -118,7 +118,7 @@ class peekable(object):
         if self._peeked:
             return self._peekvalue
         else:
-            self._peekvalue = self.it.next()
+            self._peekvalue = next(self.it)
             self._peeked = True
             return self._peekvalue
     @property
