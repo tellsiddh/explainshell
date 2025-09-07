@@ -159,8 +159,10 @@ class manpage(object):
                 groups.setdefault(opt.argument, []).append(opt)
 
         # merge all the paragraphs under the same argument to a single string
-        for k, l in groups.iteritems():
-            groups[k] = '\n\n'.join([p.text for p in l])
+        for k, lst in groups.items():
+            groups[k] = '\n\n'.join(
+                [(t.decode('latin1') if isinstance(t := p.text, (bytes, bytearray)) else t) for p in lst]
+            )
 
         return groups
 
